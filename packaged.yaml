@@ -1,0 +1,66 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: portable serverless app.
+Resources:
+  GreetingsAPIFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: combinedAdapter.apiHandler
+      Runtime: nodejs18.x
+      CodeUri: s3://portable-7/9e0a144a6dd69d5b24689adcefbbcd57
+      Environment:
+        Variables:
+          GREETING: Good Morning
+          DEFAULT_NAME: from AWS Lambda and Amazon API Gateway
+      Events:
+        GreetingsAPIEvent:
+          Type: Api
+          Properties:
+            Path: /api/hello
+            Method: GET
+        SendToSNSEvent:
+          Type: SNS
+          Properties:
+            Topic:
+              Ref: GreetingsSNSTopic
+    Metadata:
+      SamResourceId: GreetingsAPIFunction
+  GreetingsQueue:
+    Type: AWS::SQS::Queue
+    Metadata:
+      SamResourceId: GreetingsQueue
+  GreetingsSNSTopic:
+    Type: AWS::SNS::Topic
+    Properties:
+      DisplayName: GreetingsSNSTopic
+    Metadata:
+      SamResourceId: GreetingsSNSTopic
+  GreetingsSNSToSQSQueue:
+    Type: AWS::SNS::Subscription
+    Properties:
+      Protocol: sqs
+      TopicArn:
+        Ref: GreetingsSNSTopic
+      Endpoint:
+        Fn::GetAtt:
+        - GreetingsQueue
+        - Arn
+    Metadata:
+      SamResourceId: GreetingsSNSToSQSQueue
+Outputs:
+  GreetingsAPI:
+    Description: API Gateway endpoint URL for Prod stage for GreetingsAPI function
+    Value:
+      Fn::Sub: https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/api/hello/
+  GreetingsQueue:
+    Description: SQS queue processed by the GreetingsSQS function
+    Value:
+      Fn::GetAtt:
+      - GreetingsQueue
+      - QueueName
+  GreetingsQueueArn:
+    Description: ARN of the SQS queue
+    Value:
+      Fn::GetAtt:
+      - GreetingsQueue
+      - Arn

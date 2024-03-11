@@ -1,0 +1,15 @@
+{
+  "name": "mini-serverless-app",
+  "version": "1.0.0",
+  "description": "DEMO :: serverless app with SAM + SQS",
+  "main": "app.js",
+  "scripts": {
+    "start": "node app.js"
+  },
+  "author": "Archit Patel",
+  "license": "ISC",
+  "dependencies": {
+    "aws-sdk": "^2.1571.0",
+    "express": "^4.16.3"
+  }
+}
