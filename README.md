@@ -1,10 +1,4 @@
----
-runme:
-  id: 01HRF7XDZ5DE0SXB0S8156VF6G
-  version: v3
----
-
-# SAM-CLI Serverless App
+# SAM-CLI Serverless App using SQS
 
 An example of portable serverless app that can run on multiple platforms.
 
