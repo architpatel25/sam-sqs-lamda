@@ -1,10 +1,10 @@
 const AWS = require('aws-sdk');
+const URL = require("./config.json");
 const sqs = new AWS.SQS({ region: 'eu-north-1' });
-const SQSURL = 'https://sqs.eu-north-1.amazonaws.com/000251184253/miniSamApp-GreetingsQueue-CC5zGMwxMRgu';
 
 exports.apiHandler = async (event, context) => {
     console.log('ADAPTER API...');
-    const queueUrl = SQSURL;
+    const queueUrl = URL.SQSURL;
     function buildResponse(message) {
         const responseBody = {
             message: message
@@ -31,8 +31,7 @@ exports.apiHandler = async (event, context) => {
 
     try {
         await sqs.sendMessage(params).promise();
-        console.log('::::::::::::::::: Message sent to SQS ::::::::::::::');
-       
+        console.log('::::::::::::::::: Message sent to SQS ::::::::::::::');       
 
         const paramsReceiveMsg = {
             QueueUrl: queueUrl,

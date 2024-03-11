@@ -1,8 +1,4 @@
 "use strict";
-
-const axios = require('axios');
-
-// Use Express
 const express = require('express');
 const app = express();
 
@@ -13,18 +9,16 @@ function buildResponse(message) {
     console.log('response: ' + JSON.stringify(response));
     return response;
 }
-
 app.get('/', async function (req, res) {
     res.setHeader('Content-Type', 'application/json');
-
-    try {
-        const response = await axios.get('https://iox3v2dtqc.execute-api.eu-north-1.amazonaws.com/Prod/hello', {
-            params: {
-                name: req.query.name
-            }
-        });
-
-        res.send(buildResponse(response.data.message));
+    try {      
+        let name = req.query.name;
+        if ((name === undefined) || (name === null) || (name == '')) {
+            name = 'SAM-CLI with SQS';
+        }
+        const displayMessage = ('Archit is Testing') + ' ' + name + '!';
+        console.log('MSG: ', displayMessage);
+        res.send(buildResponse(displayMessage));
     } catch (error) {
         console.error('Error calling API Gateway FROM APP.js FILE:', error);
         res.send(buildResponse('Error calling API Gateway FROM APP.js FILE'));
